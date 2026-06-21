@@ -23,7 +23,7 @@ export default async function Post({
       <article className="max-w-2xl space-y-4 font-[family-name:var(--font-geist-sans)]">
         <h1 className="text-4xl font-bold mb-8 text-[#333333]">{post.title}</h1>
         <p className="text-gray-600 text-center">by {post.author.name}</p>
-        <div className="prose prose-gray mt-8">
+        <div className="prose prose-gray mt-8 text-[#333333]">
           {post.content || "No content available."}
         </div>
       </article>
