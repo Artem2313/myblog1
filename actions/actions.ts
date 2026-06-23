@@ -50,3 +50,41 @@ export async function createPost(
   revalidatePath("/posts");
   redirect("/posts");
 }
+
+export async function updatePost(
+  id: number,
+  _: FormState,
+  formData: FormData,
+): Promise<FormState> {
+  const values = {
+    title: String(formData.get("title") ?? ""),
+    content: String(formData.get("content") ?? ""),
+    authorId: String(formData.get("authorId") ?? ""),
+  };
+
+  const result = schema.safeParse(values);
+
+  if (!result.success) {
+    return {
+      values,
+      errors: result.error.flatten().fieldErrors,
+    };
+  }
+
+  await prisma.post.update({
+    where: { id },
+    data: result.data,
+  });
+
+  revalidatePath("/posts");
+  revalidatePath(`/posts/${id}`);
+  redirect(`/posts/${id}`);
+}
+
+export async function deletePost(id: number) {
+  await prisma.post.delete({
+    where: { id },
+  });
+
+  revalidatePath("/posts");
+}

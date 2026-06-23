@@ -1,4 +1,5 @@
 import prisma from "@/lib/prisma";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
 export default async function Post({
@@ -27,6 +28,14 @@ export default async function Post({
           {post.content || "No content available."}
         </div>
       </article>
+      <div>
+        <Link
+          href={`/posts/${id}/edit`}
+          className="text-blue-500 hover:underline"
+        >
+          Edit Post
+        </Link>
+      </div>
     </div>
   );
 }

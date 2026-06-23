@@ -1,7 +1,7 @@
 import Link from "next/link";
-
 import prisma from "@/lib/prisma";
 import Search from "@/components/Search";
+import { deletePost } from "@/actions/actions";
 
 export default async function Posts({
   searchParams,
@@ -32,16 +32,34 @@ export default async function Posts({
       <Search />
 
       <ul className="font-[family-name:var(--font-geist-sans)] w-full max-w-2xl space-y-4">
-        {posts.map((post) => (
-          <li key={post.id} className="p-4 bg-white rounded shadow">
-            <Link href={`/posts/${post.id}`}>
-              <span className="font-semibold">{post.title}</span>
-              <span className="text-sm text-gray-600 ml-2">
-                by {post.author.name}
-              </span>
-            </Link>
-          </li>
-        ))}
+        {posts.map((post) => {
+          const deletePostWithId = deletePost.bind(null, post.id);
+
+          return (
+            <li
+              key={post.id}
+              className="p-4 bg-white rounded shadow flex items-center justify-between gap-4"
+            >
+              <Link
+                href={`/posts/${post.id}`}
+                className="flex-1 hover:underline"
+              >
+                <span className="font-semibold">{post.title}</span>
+                <span className="text-sm text-gray-600 ml-2">
+                  by {post.author.name}
+                </span>
+              </Link>
+              <form action={deletePostWithId}>
+                <button
+                  type="submit"
+                  className="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-md transition-colors"
+                >
+                  Delete
+                </button>
+              </form>
+            </li>
+          );
+        })}
 
         {posts.length === 0 && (
           <li className="p-4 text-center text-gray-500">
