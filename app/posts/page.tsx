@@ -1,72 +1,14 @@
-import Link from "next/link";
-import prisma from "@/lib/prisma";
-import Search from "@/components/Search";
-import { deletePost } from "@/actions/actions";
+import type { Metadata } from "next";
+import PostListingPage from "@/components/posts/PostListingPage";
 
-export default async function Posts({
-  searchParams,
-}: {
-  searchParams: Promise<{ q?: string }>;
-}) {
-  const params = await searchParams;
-  const query = params?.q || "";
+export const metadata: Metadata = {
+  title: "Posts",
+};
 
-  const posts = await prisma.post.findMany({
-    where: {
-      title: {
-        contains: query,
-        mode: "insensitive",
-      },
-    },
-    include: {
-      author: true,
-    },
-  });
+// ISR: the listing is prerendered and refreshed in the background
+// at most once every 60 seconds.
+export const revalidate = 60;
 
-  return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center -mt-16 text-[#333333] p-4">
-      <h1 className="text-4xl font-bold mb-8 font-[family-name:var(--font-geist-sans)]">
-        Posts
-      </h1>
-
-      <Search />
-
-      <ul className="font-[family-name:var(--font-geist-sans)] w-full max-w-2xl space-y-4">
-        {posts.map((post) => {
-          const deletePostWithId = deletePost.bind(null, post.id);
-
-          return (
-            <li
-              key={post.id}
-              className="p-4 bg-white rounded shadow flex items-center justify-between gap-4"
-            >
-              <Link
-                href={`/posts/${post.id}`}
-                className="flex-1 hover:underline"
-              >
-                <span className="font-semibold">{post.title}</span>
-                <span className="text-sm text-gray-600 ml-2">
-                  by {post.author.name}
-                </span>
-              </Link>
-              <form action={deletePostWithId}>
-                <button
-                  type="submit"
-                  className="px-3 py-1.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-md transition-colors"
-                >
-                  Delete
-                </button>
-              </form>
-            </li>
-          );
-        })}
-
-        {posts.length === 0 && (
-          <li className="p-4 text-center text-gray-500">
-            No posts found for {query}.
-          </li>
-        )}
-      </ul>
-    </div>
-  );
+export default function PostsPage() {
+  return <PostListingPage page={1} />;
 }

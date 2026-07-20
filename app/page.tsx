@@ -1,25 +1,30 @@
-import prisma from "@/lib/prisma";
 import Link from "next/link";
 
-export default async function Home() {
-  const users = await prisma.user.findMany({ orderBy: { name: "asc" } });
+export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center -mt-16">
-      <h1 className="text-4xl font-bold mb-8 font-[family-name:var(--font-geist-sans)] text-[#333333]">
-        Superblog
+    <div className="mx-auto max-w-3xl px-4 py-24 text-center">
+      <h1 className="text-4xl font-bold text-gray-900 sm:text-5xl">
+        Welcome to My Blog
       </h1>
-      <div>
-        <Link href="/posts" className="text-blue-500 hover:underline">
-          View Posts
+      <p className="mx-auto mt-6 max-w-xl text-lg text-gray-600">
+        A modern full-stack blog built with Next.js, Prisma and PostgreSQL.
+        Read posts from the community, or create an account and start writing
+        your own.
+      </p>
+      <div className="mt-10 flex justify-center gap-4">
+        <Link
+          href="/posts"
+          className="rounded-lg bg-gray-900 px-6 py-3 font-medium text-white hover:bg-gray-700"
+        >
+          Browse posts
+        </Link>
+        <Link
+          href="/register"
+          className="rounded-lg border border-gray-300 bg-white px-6 py-3 font-medium text-gray-700 hover:bg-gray-100"
+        >
+          Start writing
         </Link>
       </div>
-      <ol className="list-decimal list-inside font-[family-name:var(--font-geist-sans)] text-[#333333] max-w-2xl space-y-2">
-        {users.map((user) => (
-          <li key={user.id} className="mb-2">
-            {user.name}
-          </li>
-        ))}
-      </ol>
     </div>
   );
 }

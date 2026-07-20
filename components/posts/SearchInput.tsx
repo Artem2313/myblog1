@@ -1,9 +1,9 @@
 "use client";
 
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "@/hooks/useDebounce";
-import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
-export default function Search() {
+export default function SearchInput() {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -17,19 +17,18 @@ export default function Search() {
     } else {
       params.delete("q");
     }
+    params.delete("page");
 
     router.replace(`${pathname}?${params.toString()}`);
-  }, 500);
+  }, 400);
 
   return (
-    <div className="w-full max-w-2xl mb-8">
-      <input
-        type="text"
-        placeholder="Search posts by title..."
-        className="w-full p-3 border border-gray-300 rounded shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 font-[family-name:var(--font-geist-sans)]"
-        onChange={(e) => handleSearch(e.target.value)}
-        defaultValue={searchParams.get("q")?.toString()}
-      />
-    </div>
+    <input
+      type="search"
+      placeholder="Search posts by title or content..."
+      defaultValue={searchParams.get("q") ?? ""}
+      onChange={(event) => handleSearch(event.target.value)}
+      className="w-full rounded-lg border border-gray-300 px-4 py-3 shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-400"
+    />
   );
 }
